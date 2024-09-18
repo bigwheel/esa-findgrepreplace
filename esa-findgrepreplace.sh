@@ -3,7 +3,7 @@
 # Replace keyword on all pages.
 #
 # USage:
-#   ./esa-findgrepreplace.sh <personal access token> <team name> <keyword> <replacement> [--dry-run] [-n]
+#   ./esa-findgrepreplace.sh <personal access token> <team name> <keyword> <replacement> [--dry-run] [-n] [--sleep-sec=<sleep second>]
 
 set -euo pipefail
 
@@ -40,6 +40,7 @@ fi
 shift 4
 
 dry_run=false
+sleep_sec=25
 while [[ $# -gt 0 ]]; do
   case $1 in
     --dry-run)
@@ -49,6 +50,14 @@ while [[ $# -gt 0 ]]; do
     -n)
         dry_run=true
         shift
+        ;;
+    --sleep-sec=*)
+        sleep_sec="${1#*=}"
+        shift
+        ;;
+    --sleep-sec)
+        sleep_sec="$2"
+        shift 2
         ;;
     *)
         echo "Unknown option: $1"
@@ -61,8 +70,11 @@ cd "$(dirname "$0")"
 
 while read -r post_number; do
   if [[ "$dry_run" == "true" ]]; then
-    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --dry-run
+    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --dry-run --sleep-sec=$sleep_sec
   else
-    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement"
+    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --sleep-sec=$sleep_sec
   fi
-done < <(./esa-findgrep.sh $pat $team_name "$keyword")
+
+  # for API invocation limit https://docs.esa.io/posts/102#%E5%88%A9%E7%94%A8%E5%88%B6%E9%99%90
+  sleep $sleep_sec
+done < <(./esa-findgrep.sh $pat $team_name "$keyword" --sleep-sec=$sleep_sec)

@@ -3,7 +3,7 @@
 # Replace keyword on esa.io post body.
 #
 # USage:
-#   ./esa-replace.sh <personal access token> <team name> <post number> <keyword> <replacement> [--dry-run] [-n]
+#   ./esa-replace.sh <personal access token> <team name> <post number> <keyword> <replacement> [--dry-run] [-n] [--sleep-sec=20] [--sleep-sec=<sleep second>]
 
 set -euo pipefail
 
@@ -47,6 +47,7 @@ fi
 shift 5
 
 dry_run=false
+sleep_sec=25
 while [[ $# -gt 0 ]]; do
   case $1 in
     --dry-run)
@@ -56,6 +57,14 @@ while [[ $# -gt 0 ]]; do
     -n)
         dry_run=true
         shift
+        ;;
+    --sleep-sec=*)
+        sleep_sec="${1#*=}"
+        shift
+        ;;
+    --sleep-sec)
+        sleep_sec="$2"
+        shift 2
         ;;
     *)
         echo "Unknown option: $1"
@@ -72,6 +81,10 @@ post=$(curl \
   "https://api.esa.io/v1/teams/$team_name/posts/$post_number" \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer $pat")
+
+
+# for API invocation limit https://docs.esa.io/posts/102#%E5%88%A9%E7%94%A8%E5%88%B6%E9%99%90
+sleep $sleep_sec
 
 body_md=$(echo $post | jq '.body_md')
 new_body_md=${body_md//$keyword/$replacement} # replace strings
