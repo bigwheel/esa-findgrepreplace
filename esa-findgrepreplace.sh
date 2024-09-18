@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Apply sed on esa.io post body.
+# Replace keyword on all pages.
 #
 # USage:
-#   ./esa-findgrepsed.sh <personal access token> <team name> <keyword> <replacement> [--dry-run] [-n]
+#   ./esa-findgrepreplace.sh <personal access token> <team name> <keyword> <replacement> [--dry-run] [-n]
 
 set -euo pipefail
 
@@ -59,6 +59,10 @@ done
 
 cd "$(dirname "$0")"
 
-while read -f post_number; do
-  ./esa-sed.sh $pat $team_name $post_number 's///g'
-done <(./esa-findgrep.sh $pat $team_name $keyword)
+while read -r post_number; do
+  if [[ "$dry_run" == "true" ]]; then
+    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --dry-run
+  else
+    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement"
+  fi
+done < <(./esa-findgrep.sh $pat $team_name "$keyword")
