@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Apply sed on esa.io post body.
+# Replace keyword on esa.io post body.
 #
 # USage:
-#   ./esa-sed.sh <personal access token> <team name> <post number> <sed params> [--dry-run] [-n]
+#   ./esa-replace.sh <personal access token> <team name> <post number> <keyword> <replacement> [--dry-run] [-n]
 
 set -euo pipefail
 
@@ -31,13 +31,20 @@ else
 fi
 
 if [ -z ${4+x} ]; then
-  echo 'Please give sed params' >&2
+  echo 'Please give keyword' >&2
   exit 1
 else
-  sed_params=$4
+  keyword=$4
 fi
 
-shift 4
+if [ -z ${5+x} ]; then
+  echo 'Please give replacement' >&2
+  exit 1
+else
+  replacement=$5
+fi
+
+shift 5
 
 dry_run=false
 while [[ $# -gt 0 ]]; do
@@ -66,7 +73,8 @@ post=$(curl \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer $pat")
 
-new_body_md=$(echo $post | jq '.body_md' | sed $sed_params)
+body_md=$(echo $post | jq '.body_md')
+new_body_md=${body_md//$keyword/$replacement} # replace strings
 
 # https://docs.esa.io/posts/102#PATCH%20/v1/teams/:team_name/posts/:post_number
 patch_request_body=$(echo $post | jq --argjson new_body_md "$new_body_md" -c '
