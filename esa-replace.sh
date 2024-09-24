@@ -113,7 +113,6 @@ if [[ "$dry_run" == "true" ]]; then
 else
   curl \
     --fail \
-    -i \
     -X PATCH \
     --silent \
     "https://api.esa.io/v1/teams/$team_name/posts/$post_number" \
