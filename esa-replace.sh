@@ -86,11 +86,11 @@ post=$(curl \
 # for API invocation limit https://docs.esa.io/posts/102#%E5%88%A9%E7%94%A8%E5%88%B6%E9%99%90
 sleep $sleep_sec
 
-body_md=$(echo $post | jq '.body_md')
+body_md=$(echo "$post" | jq '.body_md')
 new_body_md=${body_md//$keyword/$replacement} # replace strings
 
 # https://docs.esa.io/posts/102#PATCH%20/v1/teams/:team_name/posts/:post_number
-patch_request_body=$(echo $post | jq --argjson new_body_md "$new_body_md" -c '
+patch_request_body=$(echo "$post" | jq --argjson new_body_md "$new_body_md" -c '
 {
   "post": {
     "name": .name,
@@ -109,7 +109,7 @@ patch_request_body=$(echo $post | jq --argjson new_body_md "$new_body_md" -c '
 ')
 
 if [[ "$dry_run" == "true" ]]; then
-  echo $patch_request_body
+  echo "$patch_request_body"
 else
   curl \
     -f \
