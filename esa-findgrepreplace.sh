@@ -72,7 +72,7 @@ posts=$(./esa-findgrep.sh $pat $team_name "$keyword" --sleep-sec=$sleep_sec)
 
 while read -r post_number; do
   if [[ "$dry_run" == "true" ]]; then
-    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --dry-run --sleep-sec=$sleep_sec
+    ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --sleep-sec=$sleep_sec --dry-run
   else
     ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --sleep-sec=$sleep_sec
   fi
