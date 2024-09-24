@@ -68,6 +68,8 @@ done
 
 cd "$(dirname "$0")"
 
+posts=$(./esa-findgrep.sh $pat $team_name "$keyword" --sleep-sec=$sleep_sec)
+
 while read -r post_number; do
   if [[ "$dry_run" == "true" ]]; then
     ./esa-replace.sh $pat $team_name $post_number "$keyword" "$replacement" --dry-run --sleep-sec=$sleep_sec
@@ -77,4 +79,4 @@ while read -r post_number; do
 
   # for API invocation limit https://docs.esa.io/posts/102#%E5%88%A9%E7%94%A8%E5%88%B6%E9%99%90
   sleep $sleep_sec
-done < <(./esa-findgrep.sh $pat $team_name "$keyword" --sleep-sec=$sleep_sec)
+done < <(echo "$posts")
