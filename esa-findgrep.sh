@@ -61,6 +61,7 @@ else
   for index in `seq 1 1000`; do
     # https://docs.esa.io/posts/102#GET%20/v1/teams/:team_name/posts
     result=$(curl \
+      --fail \
       --get \
       --silent \
       "https://api.esa.io/v1/teams/$team_name/posts" \

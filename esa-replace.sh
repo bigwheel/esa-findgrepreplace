@@ -112,7 +112,7 @@ if [[ "$dry_run" == "true" ]]; then
   echo "$patch_request_body"
 else
   curl \
-    -f \
+    --fail \
     -i \
     -X PATCH \
     --silent \
