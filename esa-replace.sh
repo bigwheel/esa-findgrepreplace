@@ -98,7 +98,7 @@ patch_request_body=$(echo "$post" | jq --argjson new_body_md "$new_body_md" -c '
     "tags": .tags,
     "category": .category,
     "wip": .wip,
-    "message": "Updated by esa-replace.sh",
+    "message": "Updated by esa-replace.sh. [skip notice]",
     "original_revision": {
         "body_md": .body_md,
         "number": .revision_number,
