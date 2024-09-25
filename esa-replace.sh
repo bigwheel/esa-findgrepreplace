@@ -119,4 +119,5 @@ else
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer $pat" \
     --data "$patch_request_body"
+  echo # for newline
 fi
