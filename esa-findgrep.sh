@@ -72,7 +72,6 @@ else
       --data-urlencode 'per_page=100' \
       --data-urlencode "page=$index")
     echo "$result" | jq -c '.posts[].number'
-    break
     echo "$result" | jq --exit-status '.next_page == null' > /dev/null && break
 
     # for API invocation limit https://docs.esa.io/posts/102#%E5%88%A9%E7%94%A8%E5%88%B6%E9%99%90
